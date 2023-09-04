@@ -1,17 +1,37 @@
-/**
- * Hello world
- */
-
 import {
   establishConnection,
   establishPayer,
   checkProgram,
-  sayHello,
-  reportGreetings,
-} from './hello_world';
+  calculate,
+  displayResult,
+} from "./calculatorprogram";
 
 async function main() {
-  console.log("Let's say hello to a Solana account...");
+  let operation;
+  let num1;
+  let num2;
+
+  if (process.argv.length !== 5) {
+    throw new Error("Invalid input.");
+  }
+
+  process.argv.forEach(function (val, index, array) {
+    switch (index) {
+      case 2: {
+        operation = val;
+      }
+      case 3: {
+        num1 = parseInt(val);
+      }
+      case 4: {
+        num2 = parseInt(val);
+      }
+    }
+  });
+
+  if (!operation || !num1 || !num2) {
+    throw new Error("Invalid input.");
+  }
 
   // Establish connection to the cluster
   await establishConnection();
@@ -22,19 +42,17 @@ async function main() {
   // Check if the program has been deployed
   await checkProgram();
 
-  // Say hello to an account
-  await sayHello();
+  // call calculator program
+  await calculate(operation, num1, num2);
 
-  // Find out how many times that account has been greeted
-  await reportGreetings();
-
-  console.log('Success');
+  // Find out the result
+  await displayResult(operation, num1, num2);
 }
 
 main().then(
   () => process.exit(),
-  err => {
+  (err) => {
     console.error(err);
     process.exit(-1);
-  },
+  }
 );
